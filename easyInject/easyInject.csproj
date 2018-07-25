@@ -7,5 +7,10 @@
   <ItemGroup>
     <Compile Remove="Class1.cs" />
     <Compile Remove="IOC\errors\EmptyClass.cs" />
+    <Compile Remove="IOC\errors\U3dFrameworkExtensionException.cs" />
+    <Compile Remove="IOC\errors\lixo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="IOC\Runtime\Binding\Attributes.meta" />
   </ItemGroup>
 </Project>
