@@ -17,7 +17,7 @@ namespace EasyInject.Engine.Runtime
 			{
 				foreach(var type in assembly.GetTypes())
 				{
-					var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static);
+                    var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
 					
 					foreach(var method in methods)
 					{
