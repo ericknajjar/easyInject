@@ -59,6 +59,14 @@ namespace EasyInject.IOC.extensions
 			 me.CheckRequiremets(new BindingKey(key), new BindingName(name));
 		}
 	}
+
+    public static class IValueBindingContextExtensions
+    {
+        static public void To<T>(this IValueBindingContext<T> me, T obj) {
+            me.ToSingleton(() => obj);
+        }
+
+    }
 }
 	
 

@@ -10,19 +10,19 @@ namespace EasyInject.IOC
 			IDictionary<object,IBinding> m_bindings = new Dictionary<object,IBinding>(); 
 
 			public IBindingName Name{get;private set;}
-
-			public ValueBindingContext(IBindingName name)
+     
+            public ValueBindingContext(IBindingName name)
 			{
-				Name = name;
+                Name = name;
 			}
-
+      
 			#region IValueBindingContext implementation
 			public void To<T> (Func<T> func)
 			{
-				var binding = new Binding(func);
+                var binding = new Binding(func);
 				To(new BindingKey(typeof(T)),binding);
 			}
-				
+
 			#endregion
 
 			public IValueBindingContext<T> As<T>()
@@ -42,8 +42,8 @@ namespace EasyInject.IOC
 
 			internal void To(IBindingKey key,IBinding biding)
 			{
-				biding.CheckRequiremets(key,Name);
-				m_bindings[key] = biding;
+                biding.CheckRequiremets(key,Name);
+                m_bindings[key] = biding;
 			}
 
 			public bool Get(object key, IBindingContext currentBindingContext,out object ret, params object[] extras)
@@ -55,11 +55,13 @@ namespace EasyInject.IOC
 					ret = binding.Get(currentBindingContext,extras);
 					return true;
 				}
+
 				ret = null;
 				return false;
 
 			}
-				
+
+          
 		}
 
 

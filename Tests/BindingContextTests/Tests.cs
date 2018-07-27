@@ -365,6 +365,62 @@ namespace EasyInject.Tests.BindingContextTests
 			Assert.That(!context.TryGet<int>("testName",out exit));
 		}
 
+        [Test()]
+        public void BindToAnObjectReturnsTheRightObject()
+        {
+            var context = TestsFactory.BindingContext();
+            context.Bind<int>().To(33);
+
+            Assert.AreEqual(33, context.Get<int>());
+        }
+
+        [Test()]
+        public void BindToSingletonReturnsTheSame()
+        {
+            var context = TestsFactory.BindingContext();
+            var val = 0;
+
+            context.Bind<int>().ToSingleton(()=> val++);
+            var first = context.Get<int>();
+            var second = context.Get<int>();
+
+            Assert.AreEqual(first, second);
+        }
+         
+        [Test()]
+        public void BindToSingletonReturnsTheSameOneWith()
+        {
+            var context = TestsFactory.BindingContext();
+            var val = 0;
+
+            context.Bind<float>().To(1.0f);
+
+            context.Bind<int>().With<float>().ToSingleton((f) => val++);
+
+            var first = context.Get<int>();
+            var second = context.Get<int>();
+
+            Assert.AreEqual(first, second);
+        }
+
+        [Test()]
+        public void BindToSingletonReturnsTheSameTwoWith()
+        {
+            var context = TestsFactory.BindingContext();
+            var val = 0;
+
+            context.Bind<float>().To(1.0f);
+            context.Bind<string>().To("");
+
+            context.Bind<int>().With<float>().With<string>().ToSingleton((f,s) => val++);
+
+            var first = context.Get<int>();
+            var second = context.Get<int>();
+
+            Assert.AreEqual(first, second);
+        }
+
+
 		[Test ()]
 		public void TryGetPartialBindingTest()
 		{

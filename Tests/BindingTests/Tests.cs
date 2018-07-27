@@ -5,10 +5,10 @@ using EasyInject.IOC.extensions;
 
 namespace EasyInject.Tests.BindingTests
 {
-	[TestFixture ()]
+	[TestFixture]
 	public class Tests
 	{
-		[Test ()]
+		[Test]
 		public void BindingRequirementEquality()
 		{
 
@@ -18,7 +18,7 @@ namespace EasyInject.Tests.BindingTests
 			Assert.AreEqual(requirement,requirementb);
 		}
 
-		[Test ()]
+		[Test]
 		public void BindingCheckForErrors()
 		{
 
@@ -30,6 +30,37 @@ namespace EasyInject.Tests.BindingTests
 
 			Assert.Throws<BindingSelfRequirement>(() => binding.CheckRequiremets(typeof(int),InnerBindingNames.Empty));
 		}
+
+        [Test]
+        public void GetWorks()
+        {
+            Func<int> func = () => 45;
+
+            IBinding binding = new Binding(func);
+
+            var mock = new Moq.Mock<IBindingContext>();
+
+             var value = (int)binding.Get(mock.Object);
+
+            Assert.AreEqual(45, value);
+        }
+
+        [Test]
+        public void BindingAsSingletonRetunsAlwaysTheSame()
+        {
+            var ret = 0;
+            Func<int> func = () => ret++;
+
+            var singletonBinding = new SingletonBinding(new Binding(func));
+
+            var mock = new Moq.Mock<IBindingContext>();
+
+            var value = (int)singletonBinding.Get(mock.Object);
+            var value2 = (int)singletonBinding.Get(mock.Object);
+
+            Assert.AreEqual(value, value2);
+        }
+
 
 	}
 }

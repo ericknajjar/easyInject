@@ -20,7 +20,13 @@ namespace EasyInject.IOC
 			{
 				m_adaptee.To<T>(func);
 			}
-		
+
+            public void ToSingleton<T1>(Func<T1> func)
+            {
+                var binding = new Binding(func);
+                m_adaptee.To<T1>(new SingletonBinding(binding));
+            }
+
 			IValueBindingContext<T,K> IValueBindingContext<T>.With<K> ()
 			{
 				return new ValueBindingContextAdapterWith<T,K>(new BindingName(InnerBindingNames.Empty),m_adaptee);
@@ -35,7 +41,10 @@ namespace EasyInject.IOC
 			{
 				return With<K>(new BindingName(name));
 			}
-			#endregion
+
+		
+
+            #endregion
 		}
 	
 		class UnsafeValueBindindContextAdapter: IUnsafeValueBindingContext
@@ -79,6 +88,13 @@ namespace EasyInject.IOC
 				m_adaptee.To<T>(binding);
 			}
 
+            public void ToSingleton(Func<J, T> func)
+            {
+                var binding = new Binding(func, Requirements().ToArray());
+                m_adaptee.To<T>(new SingletonBinding(binding));
+            }
+
+
 			public List<IBindingRequirement> Requirements()
 			{
 				var requirement = BindingRequirements.Instance.With<J>(m_name);
@@ -101,7 +117,9 @@ namespace EasyInject.IOC
 				return With<K>(new BindingName(name));
 			}
 
-			#endregion
+           
+
+            #endregion
 		}
 
 		class ValueBingindContextAdapterWith<T,J,K>: IValueBindingContext<T,J,K>
@@ -129,6 +147,11 @@ namespace EasyInject.IOC
 				m_adaptee.To<T>(binding);
 			}
 
+            public void ToSingleton(Func<J, K, T> func)
+            {
+                var binding = new Binding(func, Requirements().ToArray());
+                m_adaptee.To<T>(new SingletonBinding(binding));
+            }
 			#endregion
 
 			public List<IBindingRequirement> Requirements()
@@ -140,6 +163,8 @@ namespace EasyInject.IOC
 
 				return ret;
 			}
+
+     
 		}
 
 	

@@ -10,8 +10,6 @@ namespace EasyInject.IOC
 		{
 			m_adaptee = adaptee;
 		}
-
-
 	
 		#region IUnsafeBindingContext implementation
 

@@ -41,7 +41,9 @@ namespace EasyInject.Engine.Runtime
 				var factory = System.Delegate.CreateDelegate(delegateType,binding.Factory);
 
 				IBinding realBinding = new Binding(factory,requirements.ToArray());
-
+                if (binding.Singleton)
+                    realBinding = new SingletonBinding(realBinding);
+                
 				context.Unsafe.Bind(binding.Root.name,binding.Root.BindingType).To(realBinding);
 			}
 
