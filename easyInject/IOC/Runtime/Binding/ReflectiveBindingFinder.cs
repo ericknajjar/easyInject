@@ -13,26 +13,42 @@ namespace EasyInject.Engine.Runtime
 		public ReflectiveBindingFinder(params Assembly[] assemblies)
 		{
 			m_assemblies = assemblies;
-			foreach(var assembly in m_assemblies)
-			{
-				foreach(var type in assembly.GetTypes())
-				{
-                    var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
-					
-					foreach(var method in methods)
-					{
-						var attributes = method.GetCustomAttributes(typeof(BindingProviderAttribute),false);
-						
-						if(attributes.Length > 0)
-						{
-							var toAdd =  CreateReflectiveBinding(method,(BindingProviderAttribute)attributes[0]);
-							m_providers.Add(toAdd);
-						}
-					}
-				}
-				
-			}
+            FindBindings(false);
 		}
+
+        public ReflectiveBindingFinder(bool checkHasBindings,params Assembly[] assemblies)
+        {
+            m_assemblies = assemblies;
+            FindBindings(checkHasBindings);
+        }
+
+        private void FindBindings(bool checkHasBindings)
+        {
+            foreach (var assembly in m_assemblies)
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    if(checkHasBindings && type.GetCustomAttributes(typeof(HasBindings), true).Length <= 0)
+                    {
+                        continue;
+                    }
+
+                     var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+
+                    foreach (var method in methods)
+                    {
+                        var attributes = method.GetCustomAttributes(typeof(BindingProviderAttribute), false);
+
+                        if (attributes.Length > 0)
+                        {
+                            var toAdd = CreateReflectiveBinding(method, (BindingProviderAttribute)attributes[0]);
+                            m_providers.Add(toAdd);
+                        }
+                    }
+                }
+
+            }
+        }
 
 		public ReflectiveBinding CreateReflectiveBinding(MethodInfo factory,BindingProviderAttribute attribute)
 		{

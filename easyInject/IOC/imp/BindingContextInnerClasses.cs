@@ -21,10 +21,10 @@ namespace EasyInject.IOC
 				m_adaptee.To<T>(func);
 			}
 
-            public void ToSingleton<T1>(Func<T1> func)
+            public void ToSingleton(Func<T> func)
             {
                 var binding = new Binding(func);
-                m_adaptee.To<T1>(new SingletonBinding(binding));
+                m_adaptee.To<T>(new SingletonBinding(binding));
             }
 
 			IValueBindingContext<T,K> IValueBindingContext<T>.With<K> ()

@@ -11,7 +11,7 @@ namespace EasyInject.IOC
 	public interface IValueBindingContext<T>
 	{
 		void To(System.Func<T> func);
-        void ToSingleton<T>(System.Func<T> func);
+        void ToSingleton(System.Func<T> func);
 		IValueBindingContext<T,K> With<K> ();
 		IValueBindingContext<T,K> With<K> (object name);
 	}
