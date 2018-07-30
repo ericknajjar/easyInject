@@ -11,15 +11,13 @@ namespace EasyInject.Engine.Runtime
 		public MethodInfo Factory{get; private set;}
 		public IList<BindingPair> Dependencies{get; private set;}
         public bool Singleton { get; private set; }
-        public object[] Subcontexts { get; private set; }
 
-        public ReflectiveBinding (BindingPair root, MethodInfo factory, IList<BindingPair> dependencies, bool singleton, object[] subcontexts)
+		public ReflectiveBinding (BindingPair root, MethodInfo factory, IList<BindingPair> dependencies, bool singleton)
 		{
 			this.Root = root;
 			this.Factory = factory;
 			this.Dependencies = dependencies;
             this.Singleton = singleton;
-            this.Subcontexts = subcontexts;
 		}
 		
 	}

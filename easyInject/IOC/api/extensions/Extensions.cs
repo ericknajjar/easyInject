@@ -37,30 +37,6 @@ namespace EasyInject.IOC.extensions
 		{
 			return me.TryGet<T>(new BindingName(name),out t);
 		}
-
-        public static IBindingContext GetSubcontext(this IBindingContext me ,params object[] names)
-        {
-            IBindingContext context = me;
-            var length = names.Length;
-
-            for (int i = 0; i < length;++i)
-            {
-                var name = names[i];
-                IBindingContext currentContext;
-
-                if (!context.TryGet<IBindingContext>(name, out currentContext))
-                {
-                    currentContext = BindingContext.Create();
-                    context.Bind<IBindingContext>(name).To(currentContext);
-                }
-
-                context = currentContext;
-            }
-
-          
-
-            return context;
-        }
 	}
 
 	public static class BindingRequirementsExtensions

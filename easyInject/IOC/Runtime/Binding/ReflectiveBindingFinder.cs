@@ -77,7 +77,7 @@ namespace EasyInject.Engine.Runtime
 
 			var root = new BindingPair(attribute.Name,factory.ReturnType);
 
-            return new ReflectiveBinding(root,factory,dependencies,attribute.Singleton, attribute.Subcontexts);
+            return new ReflectiveBinding(root,factory,dependencies,attribute.Singleton);
 		}
 
 		#region IEnumerable implementation
