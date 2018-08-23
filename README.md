@@ -1,2 +1,2 @@
 # easyInject
-An easy to user inject library for C# specifically targeted at Unity 
+An easy to use inject library for C# specifically targeted at Unity 
