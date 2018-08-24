@@ -7,6 +7,8 @@ namespace EasyInject.IOC
 	{
 		IDictionary<IBindingName,ValueBindingContext> m_namedBindings;
 
+        Func<IBindingName, IBindingKey, object[], object> m_fallback = null;
+
 		BindingContext()
 		{
 			m_namedBindings = new Dictionary<IBindingName,ValueBindingContext>();
@@ -85,6 +87,7 @@ namespace EasyInject.IOC
 				return new UnsafeBindingContextAdapter(this);
 			}
 		}
+
 		#endregion
 
 		bool TryGet<T> (IBindingName name, IBindingKey key,out T t, object[] extras)
@@ -119,7 +122,13 @@ namespace EasyInject.IOC
 		public object Get(IBindingName name,IBindingKey key, params object[] extras)
 		{
 			object ret = TryGetBinding (name, key, extras);
-			if(ret == null) throw new BindingNotFound(name,key);
+
+            ret = (ret == null && m_fallback != null) ? m_fallback(name, key, extras) : ret ;
+                
+			if(ret == null) 
+            {
+                throw new BindingNotFound(name, key);
+            }
 			return ret;
 		}
 
@@ -146,6 +155,11 @@ namespace EasyInject.IOC
 		{
 			return GetBinding(name,false,out valueBindingContext);
 		}
+
+        void IBindingContext.FallBack(Func<IBindingName, IBindingKey, object[], object> fallbackFunc)
+        {
+            m_fallback = fallbackFunc;
+        }
 	}
 }
 

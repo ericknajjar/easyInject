@@ -444,6 +444,20 @@ namespace EasyInject.Tests.BindingContextTests
 			Assert.AreEqual(32,extra);
 		}
 
+        [Test()]
+        public void BindingContextFallsBackToFallback()
+        {
+            var context = TestsFactory.BindingContext();
+
+            context.FallBack((name, key, extras) => {
+                return 3;
+            });
+
+            var result = context.Get<int>();
+
+            Assert.AreEqual(result, 3);
+        }
+
 
 	}
 

@@ -14,6 +14,8 @@ namespace EasyInject.IOC
 		bool TryGet<T>(IBindingName name,out T t,params object[] extras);
 
 		IUnsafeBindingContext Unsafe{get;}
+
+        void FallBack(Func<IBindingName, IBindingKey, object[], object> fallbackfunc);
 	}
 }
 
