@@ -12,7 +12,7 @@ This approach to dependency injection brings code using easyInject much closer t
 There are two main namespaces in easyInject, namely ```EasyInject.IOC and EasyInject.IOC.extensions```, both are important in order to compile this examples.
 
 ## Manual Binding
-Manual binding is a type of binding where you programmatically define bindings, it's dependencies and what the return value is. It allows for some interesting kinds of architectures and it's not better or worst then it's sibling, automatic binding, just differente. Some types of bidings can only be defined in manual binding.
+Manual binding is a type of binding where you programmatically define bindings, it's dependencies and what the return value is. It allows for some interesting kinds of architectures and it's not better or worst then it's sibling, automatic binding, just different. Some types of bindings can only be defined in manual binding.
 
 ### Simple Value binding
 Binding a value is simple like that
@@ -22,7 +22,7 @@ IBindingContext context = TestsFactory.BindingContext();
 
 int value = 45;
 
-context.Bind<int>().To(() => 45);
+context.Bind<int>().To(() => value);
 
 Console.WriteLine(context.Get<int>());
 ...
@@ -79,7 +79,7 @@ IBindingContext context = TestsFactory.BindingContext();
 
 int value = 45;
 
-context.Bind<int>().To(45);
+context.Bind<int>().To(value);
 
 Console.WriteLine(context.Get<int>());
 Console.WriteLine(context.Get<int>(InnerBindingNames.Empty));
