@@ -11,7 +11,6 @@ namespace EasyInject.Engine.Runtime
 		public object Name = IOC.InnerBindingNames.Empty;
 		public int DependencyCount = 0;
         public bool Singleton = false;
-        public object[] Subcontexts = new object[0];
 		public object[] DependencieNames = new object[0];
 	}
 

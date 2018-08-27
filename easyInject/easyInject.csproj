@@ -6,6 +6,5 @@
 
   <ItemGroup>
     <Compile Remove="Class1.cs" />
-    <Compile Remove="IOC\Runtime\Binding\Attributes\Subcontext.cs" />
   </ItemGroup>
 </Project>
