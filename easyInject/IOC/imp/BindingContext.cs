@@ -7,7 +7,7 @@ namespace EasyInject.IOC
 	{
 		IDictionary<IBindingName,ValueBindingContext> m_namedBindings;
 
-        Func<IBindingName, IBindingKey, object[], object> m_fallback = null;
+        List<FallbackDelegate> m_fallbacks = new List<FallbackDelegate>();
 
 		BindingContext()
 		{
@@ -103,7 +103,7 @@ namespace EasyInject.IOC
 			return false;
 		}
 
-		object TryGetBinding (IBindingName name, IBindingKey key, object[] extras)
+		public object TryGetBinding (IBindingName name, IBindingKey key, object[] extras)
 		{
 			ValueBindingContext ret = null;
 
@@ -123,12 +123,23 @@ namespace EasyInject.IOC
 		{
 			object ret = TryGetBinding (name, key, extras);
 
-            ret = (ret == null && m_fallback != null) ? m_fallback(name, key, extras) : ret ;
+            if(ret == null && m_fallbacks.Count > 0)
+            {
+                foreach(var fallback in m_fallbacks)
+                {
+                    ret = fallback(name, key, extras);
+                    if (ret != null)
+                        break;
+                }
+            
+            }
+
                 
 			if(ret == null) 
             {
                 throw new BindingNotFound(name, key);
             }
+
 			return ret;
 		}
 
@@ -156,9 +167,9 @@ namespace EasyInject.IOC
 			return GetBinding(name,false,out valueBindingContext);
 		}
 
-        void IBindingContext.FallBack(Func<IBindingName, IBindingKey, object[], object> fallbackFunc)
+        void IBindingContext.FallBack(FallbackDelegate fallbackFunc)
         {
-            m_fallback = fallbackFunc;
+            m_fallbacks.Add(fallbackFunc);
         }
 	}
 }

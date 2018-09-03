@@ -2,8 +2,10 @@
 
 namespace EasyInject.IOC
 {
+    public delegate object FallbackDelegate(IBindingName name, IBindingKey key, object[] extras);
 	public interface IBindingContext
 	{
+       
 		IValueBindingContext<T> Bind<T>();
 		IValueBindingContext<T> Bind<T>(IBindingName name);
 
@@ -15,7 +17,7 @@ namespace EasyInject.IOC
 
 		IUnsafeBindingContext Unsafe{get;}
 
-        void FallBack(Func<IBindingName, IBindingKey, object[], object> fallbackfunc);
+        void FallBack(FallbackDelegate fallbackfunc);
 	}
 }
 

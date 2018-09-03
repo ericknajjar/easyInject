@@ -308,6 +308,19 @@ namespace EasyInject.Tests.BindingContextTests
 			Assert.DoesNotThrow(() => TypedGet<int>(context) );
 		}
 
+        [Test()]
+        public void UnsafeTypedGetTest()
+        {
+            var context = TestsFactory.BindingContext();
+
+            context.Bind<int>().To(() => 42);
+
+            var name = new BindingName(InnerBindingNames.Empty);
+            var key = new BindingKey(typeof(int));
+                
+            Assert.DoesNotThrow(() => context.Unsafe.TryGet(name,key,new object[0]));
+        }
+
 		[Test ()]
 		public void TypedInterfaceGetTest()
 		{
@@ -319,7 +332,7 @@ namespace EasyInject.Tests.BindingContextTests
 			
 			Assert.DoesNotThrow(() => TypedGet<ITestInterface>(context) );
 		}
-
+         
 		[Test ()]
 		public void TryGetNotFoundTest()
 		{
@@ -421,43 +434,28 @@ namespace EasyInject.Tests.BindingContextTests
         }
 
 
-		[Test ()]
-		public void TryGetPartialBindingTest()
-		{
-			IBindingContext context = TestsFactory.BindingContext();
-			IBindingRequirement requirement = BindingRequirements.Instance.With<float>();
-
-			context.Bind<float>().To(()=> 0.1f);
-
-			int extra = -1;
-
-			System.Func<float,int,int> func = (bindinded,nonBinded) => {extra = nonBinded; return 45;};
-
-			IBinding binding = new Binding(func,requirement);
-
-			context.Unsafe.Bind(typeof(int)).To(binding);
-
-			int exit = 0;
-
-			context.TryGet<int>(out exit,32);
-
-			Assert.AreEqual(32,extra);
-		}
-
         [Test()]
-        public void BindingContextFallsBackToFallback()
+        public void TryGetPartialBindingTest()
         {
-            var context = TestsFactory.BindingContext();
+            IBindingContext context = TestsFactory.BindingContext();
+            IBindingRequirement requirement = BindingRequirements.Instance.With<float>();
 
-            context.FallBack((name, key, extras) => {
-                return 3;
-            });
+            context.Bind<float>().To(() => 0.1f);
 
-            var result = context.Get<int>();
+            int extra = -1;
 
-            Assert.AreEqual(result, 3);
+            System.Func<float, int, int> func = (bindinded, nonBinded) => { extra = nonBinded; return 45; };
+
+            IBinding binding = new Binding(func, requirement);
+
+            context.Unsafe.Bind(typeof(int)).To(binding);
+
+            int exit = 0;
+
+            context.TryGet<int>(out exit, 32);
+
+            Assert.AreEqual(32, extra);
         }
-
 
 	}
 
