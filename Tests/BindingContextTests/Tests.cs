@@ -433,6 +433,19 @@ namespace EasyInject.Tests.BindingContextTests
             Assert.AreEqual(first, second);
         }
 
+        [Test()]
+        public void CanGetValueFromSubcontext()
+        {
+            var context = TestsFactory.BindingContext();
+            var subcontext = context.GetSubcontext("a");
+      
+            subcontext.Bind<int>().To(25);
+
+            var first = context.GetSubcontext("a").Get<int>();
+            Assert.AreEqual(25, first);
+        }
+
+
 
         [Test()]
         public void TryGetPartialBindingTest()
