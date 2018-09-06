@@ -60,6 +60,7 @@ namespace EasyInject.IOC.extensions
                 if (!context.TryGet<IBindingContext>(name, out currentContext))
                 {
                     currentContext = BindingContext.Create();
+                    currentContext.FallBack(context);
                     context.Bind<IBindingContext>(name).To(currentContext);
                 }
 

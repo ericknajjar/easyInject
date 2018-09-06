@@ -445,6 +445,19 @@ namespace EasyInject.Tests.BindingContextTests
             Assert.AreEqual(25, first);
         }
 
+        [Test()]
+        public void SubcontextHasMainContextAsFallback()
+        {
+            var context = TestsFactory.BindingContext();
+            context.Bind<string>().To("str");
+
+            var subcontext = context.GetSubcontext("a");
+
+            var str = subcontext.Get<string>();
+
+            Assert.AreEqual(str, "str");
+        }
+
 
 
         [Test()]
