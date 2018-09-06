@@ -98,6 +98,22 @@ namespace EasyInject.Tests.BindingContextTests
             }
 
             [Test()]
+            public void UsesOriginalWhenThereIsNoNeedToFallback()
+            {
+                var context1 = TestsFactory.BindingContext();
+                var context2 = TestsFactory.BindingContext();
+
+                context1.Bind<string>().To("fallback");
+                context2.Bind<string>().To("original");
+
+                context2.FallBack(context1);
+
+                var result = context2.Get<string>();
+
+                Assert.AreEqual(result, "original");
+            }
+
+            [Test()]
             public void FallbackUseExtras()
             {
                 var context1 = TestsFactory.BindingContext();
