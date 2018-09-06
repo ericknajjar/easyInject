@@ -37,6 +37,13 @@ namespace EasyInject.IOC.extensions
 		{
 			return me.TryGet<T>(new BindingName(name),out t);
 		}
+
+        static public void FallBack(this IBindingContext me, IBindingContext other)
+        {
+            me.FallBack((name, key, extras) => {
+                return other.Unsafe.TryGet(name, key, extras);
+            });
+        }
 	}
 
 	public static class BindingRequirementsExtensions
@@ -62,7 +69,8 @@ namespace EasyInject.IOC.extensions
 
     public static class IValueBindingContextExtensions
     {
-        static public void To<T>(this IValueBindingContext<T> me, T obj) {
+        static public void To<T>(this IValueBindingContext<T> me, T obj)
+        {
             me.ToSingleton(() => obj);
         }
 

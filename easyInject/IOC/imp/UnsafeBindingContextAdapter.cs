@@ -28,7 +28,18 @@ namespace EasyInject.IOC
 			return m_adaptee.Get(name,key);
 		}
 
-		#endregion
+        object IUnsafeBindingContext.Get(IBindingName name, IBindingKey key, params object[] extras)
+        {
+            return m_adaptee.Get(name, key, extras);
+        }
+
+  
+        object IUnsafeBindingContext.TryGet(IBindingName name, IBindingKey key, params object[] extras)
+        {
+            return m_adaptee.TryGetBinding(name, key, extras);
+        }
+
+        #endregion
 	}
 }
 
