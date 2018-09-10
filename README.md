@@ -1,5 +1,5 @@
 # easyInject
-An easy to use dependency injection library for C# specifically targeted with Unity compatibility in mind
+An easy to use dependency injection library for C# specifically made with Unity compatibility in mind
 
 # Overview
 This library aims to be a non-instrusive dependency injection solution for C#. Non-intrsuive in the way that you don't need to change a component in order for it to be injectable or have it's dependencies solved.
