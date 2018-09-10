@@ -7,6 +7,8 @@ namespace EasyInject.IOC
 	{
 		IDictionary<IBindingName,ValueBindingContext> m_namedBindings;
 
+        List<FallbackDelegate> m_fallbacks = new List<FallbackDelegate>();
+
 		BindingContext()
 		{
 			m_namedBindings = new Dictionary<IBindingName,ValueBindingContext>();
@@ -85,6 +87,7 @@ namespace EasyInject.IOC
 				return new UnsafeBindingContextAdapter(this);
 			}
 		}
+
 		#endregion
 
 		bool TryGet<T> (IBindingName name, IBindingKey key,out T t, object[] extras)
@@ -100,26 +103,46 @@ namespace EasyInject.IOC
 			return false;
 		}
 
-		object TryGetBinding (IBindingName name, IBindingKey key, object[] extras)
+		public object TryGetBinding (IBindingName name, IBindingKey key, object[] extras)
 		{
 			ValueBindingContext ret = null;
+            object theValue = null;
 
 			if (GetBinding (name, out ret))
 			{
-				object theValue = null;
-				if (ret.Get (key, this, out theValue, extras))
+				
+				if (!ret.Get (key, this, out theValue, extras))
 				{
-					return theValue;
+					theValue = null;
 				}
+
 			}
 
-			return null;
+            if(theValue == null)
+            {
+                foreach(var fallback in m_fallbacks)
+                {
+                    theValue = fallback(name, key, extras); 
+
+                    if (theValue != null)
+                        break;
+                }
+            
+            }
+
+            return theValue;
 		}
 
 		public object Get(IBindingName name,IBindingKey key, params object[] extras)
 		{
 			object ret = TryGetBinding (name, key, extras);
-			if(ret == null) throw new BindingNotFound(name,key);
+
+                
+			if(ret == null) 
+            {
+                throw new BindingNotFound(name, key);
+            }
+
 			return ret;
 		}
 
@@ -129,7 +152,7 @@ namespace EasyInject.IOC
 			{
 				return true;
 			}
-
+           
 			if(create)
 			{
 				valueBindingContext = new ValueBindingContext(name);
@@ -146,6 +169,11 @@ namespace EasyInject.IOC
 		{
 			return GetBinding(name,false,out valueBindingContext);
 		}
+
+        void IBindingContext.FallBack(FallbackDelegate fallbackFunc)
+        {
+            m_fallbacks.Add(fallbackFunc);
+        }
 	}
 }
 

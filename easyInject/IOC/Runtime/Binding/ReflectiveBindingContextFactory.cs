@@ -43,12 +43,24 @@ namespace EasyInject.Engine.Runtime
 				IBinding realBinding = new Binding(factory,requirements.ToArray());
                 if (binding.Singleton)
                     realBinding = new SingletonBinding(realBinding);
-                
-				context.Unsafe.Bind(binding.Root.name,binding.Root.BindingType).To(realBinding);
-			}
+
+                AddToContext(context,binding.Root, realBinding, binding.Subcontexts);
+	    	}
 
 			return context;
 		}
+
+        private void AddToContext(IBindingContext root, BindingPair pair, IBinding binding, object[] subcontexts) {
+
+            IBindingContext finalBindingContext = root;
+
+            foreach(var contextName in subcontexts)
+            {
+                finalBindingContext = finalBindingContext.GetSubcontext(contextName);
+            }
+
+            finalBindingContext.Unsafe.Bind(pair.name, pair.BindingType).To(binding);
+        }
 	}
 }
 

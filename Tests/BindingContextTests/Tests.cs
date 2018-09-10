@@ -308,6 +308,19 @@ namespace EasyInject.Tests.BindingContextTests
 			Assert.DoesNotThrow(() => TypedGet<int>(context) );
 		}
 
+        [Test()]
+        public void UnsafeTypedGetTest()
+        {
+            var context = TestsFactory.BindingContext();
+
+            context.Bind<int>().To(() => 42);
+
+            var name = new BindingName(InnerBindingNames.Empty);
+            var key = new BindingKey(typeof(int));
+                
+            Assert.DoesNotThrow(() => context.Unsafe.TryGet(name,key,new object[0]));
+        }
+
 		[Test ()]
 		public void TypedInterfaceGetTest()
 		{
@@ -319,7 +332,7 @@ namespace EasyInject.Tests.BindingContextTests
 			
 			Assert.DoesNotThrow(() => TypedGet<ITestInterface>(context) );
 		}
-
+         
 		[Test ()]
 		public void TryGetNotFoundTest()
 		{
@@ -420,30 +433,68 @@ namespace EasyInject.Tests.BindingContextTests
             Assert.AreEqual(first, second);
         }
 
+        [Test()]
+        public void CanGetValueFromSubcontext()
+        {
+            var context = TestsFactory.BindingContext();
+            var subcontext = context.GetSubcontext("a");
+      
+            subcontext.Bind<int>().To(25);
 
-		[Test ()]
-		public void TryGetPartialBindingTest()
-		{
-			IBindingContext context = TestsFactory.BindingContext();
-			IBindingRequirement requirement = BindingRequirements.Instance.With<float>();
+            var first = context.GetSubcontext("a").Get<int>();
+            Assert.AreEqual(25, first);
+        }
 
-			context.Bind<float>().To(()=> 0.1f);
+        [Test()]
+        public void SubcontextHasMainContextAsFallback()
+        {
+            var context = TestsFactory.BindingContext();
+            context.Bind<string>().To("str");
 
-			int extra = -1;
+            var subcontext = context.GetSubcontext("a");
 
-			System.Func<float,int,int> func = (bindinded,nonBinded) => {extra = nonBinded; return 45;};
+            var str = subcontext.Get<string>();
 
-			IBinding binding = new Binding(func,requirement);
+            Assert.AreEqual(str, "str");
+        }
 
-			context.Unsafe.Bind(typeof(int)).To(binding);
+        [Test()]
+        public void SubcontextFallbacksAllTheWayUp()
+        {
+            var context = TestsFactory.BindingContext();
+            context.Bind<string>().To("str");
 
-			int exit = 0;
+            var subcontext = context.GetSubcontext("a","b");
 
-			context.TryGet<int>(out exit,32);
+            var str = subcontext.Get<string>();
 
-			Assert.AreEqual(32,extra);
-		}
+            Assert.AreEqual(str, "str");
+        }
 
+
+
+        [Test()]
+        public void TryGetPartialBindingTest()
+        {
+            IBindingContext context = TestsFactory.BindingContext();
+            IBindingRequirement requirement = BindingRequirements.Instance.With<float>();
+
+            context.Bind<float>().To(() => 0.1f);
+
+            int extra = -1;
+
+            System.Func<float, int, int> func = (bindinded, nonBinded) => { extra = nonBinded; return 45; };
+
+            IBinding binding = new Binding(func, requirement);
+
+            context.Unsafe.Bind(typeof(int)).To(binding);
+
+            int exit = 0;
+
+            context.TryGet<int>(out exit, 32);
+
+            Assert.AreEqual(32, extra);
+        }
 
 	}
 
