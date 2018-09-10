@@ -458,6 +458,19 @@ namespace EasyInject.Tests.BindingContextTests
             Assert.AreEqual(str, "str");
         }
 
+        [Test()]
+        public void SubcontextFallbacksAllTheWayUp()
+        {
+            var context = TestsFactory.BindingContext();
+            context.Bind<string>().To("str");
+
+            var subcontext = context.GetSubcontext("a","b");
+
+            var str = subcontext.Get<string>();
+
+            Assert.AreEqual(str, "str");
+        }
+
 
 
         [Test()]
