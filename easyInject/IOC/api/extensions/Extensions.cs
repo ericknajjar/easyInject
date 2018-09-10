@@ -38,11 +38,39 @@ namespace EasyInject.IOC.extensions
 			return me.TryGet<T>(new BindingName(name),out t);
 		}
 
+
         static public void FallBack(this IBindingContext me, IBindingContext other)
         {
-            me.FallBack((name, key, extras) => {
+            me.FallBack((name, key, extras) =>
+            {
                 return other.Unsafe.TryGet(name, key, extras);
             });
+        }
+
+        public static IBindingContext GetSubcontext(this IBindingContext me ,params object[] names)
+        {
+            IBindingContext context = me;
+            var length = names.Length;
+
+            for (int i = 0; i < length;++i)
+            {
+                var name = names[i];
+                IBindingContext currentContext;
+
+                if (!context.TryGet<IBindingContext>(name, out currentContext))
+                {
+                    currentContext = BindingContext.Create();
+                    currentContext.FallBack(context);
+                    context.Bind<IBindingContext>(name).To(currentContext);
+                }
+
+                context = currentContext;
+            }
+
+          
+
+            return context;
+
         }
 	}
 

@@ -106,33 +106,36 @@ namespace EasyInject.IOC
 		public object TryGetBinding (IBindingName name, IBindingKey key, object[] extras)
 		{
 			ValueBindingContext ret = null;
+            object theValue = null;
 
 			if (GetBinding (name, out ret))
 			{
-				object theValue = null;
-				if (ret.Get (key, this, out theValue, extras))
+				
+				if (!ret.Get (key, this, out theValue, extras))
 				{
-					return theValue;
+					theValue = null;
 				}
+
 			}
 
-			return null;
+            if(theValue == null)
+            {
+                foreach(var fallback in m_fallbacks)
+                {
+                    theValue = fallback(name, key, extras); 
+
+                    if (theValue != null)
+                        break;
+                }
+            
+            }
+
+            return theValue;
 		}
 
 		public object Get(IBindingName name,IBindingKey key, params object[] extras)
 		{
 			object ret = TryGetBinding (name, key, extras);
-
-            if(ret == null && m_fallbacks.Count > 0)
-            {
-                foreach(var fallback in m_fallbacks)
-                {
-                    ret = fallback(name, key, extras);
-                    if (ret != null)
-                        break;
-                }
-            
-            }
 
                 
 			if(ret == null) 
@@ -149,7 +152,7 @@ namespace EasyInject.IOC
 			{
 				return true;
 			}
-
+           
 			if(create)
 			{
 				valueBindingContext = new ValueBindingContext(name);

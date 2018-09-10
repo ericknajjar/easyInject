@@ -433,6 +433,45 @@ namespace EasyInject.Tests.BindingContextTests
             Assert.AreEqual(first, second);
         }
 
+        [Test()]
+        public void CanGetValueFromSubcontext()
+        {
+            var context = TestsFactory.BindingContext();
+            var subcontext = context.GetSubcontext("a");
+      
+            subcontext.Bind<int>().To(25);
+
+            var first = context.GetSubcontext("a").Get<int>();
+            Assert.AreEqual(25, first);
+        }
+
+        [Test()]
+        public void SubcontextHasMainContextAsFallback()
+        {
+            var context = TestsFactory.BindingContext();
+            context.Bind<string>().To("str");
+
+            var subcontext = context.GetSubcontext("a");
+
+            var str = subcontext.Get<string>();
+
+            Assert.AreEqual(str, "str");
+        }
+
+        [Test()]
+        public void SubcontextFallbacksAllTheWayUp()
+        {
+            var context = TestsFactory.BindingContext();
+            context.Bind<string>().To("str");
+
+            var subcontext = context.GetSubcontext("a","b");
+
+            var str = subcontext.Get<string>();
+
+            Assert.AreEqual(str, "str");
+        }
+
+
 
         [Test()]
         public void TryGetPartialBindingTest()
