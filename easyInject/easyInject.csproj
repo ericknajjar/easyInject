@@ -1,11 +1,72 @@
-<Project Sdk="Microsoft.NET.Sdk">
-
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D383FCF2-D53E-4326-8D3C-811F4A542344}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>easyInject</RootNamespace>
+    <AssemblyName>easyInject</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <UseMSBuildEngine>false</UseMSBuildEngine>
   </PropertyGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Class1.cs" />
-    <Compile Remove="IOC\Runtime\Binding\Attributes\Subcontext.cs" />
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IOC\Runtime\Binding\BindingPair.cs" />
+    <Compile Include="IOC\Runtime\Binding\IBindingProvider.cs" />
+    <Compile Include="IOC\Runtime\Binding\ReflectiveBinding.cs" />
+    <Compile Include="IOC\Runtime\Binding\ReflectiveBindingContextFactory.cs" />
+    <Compile Include="IOC\Runtime\Binding\ReflectiveBindingFinder.cs" />
+    <Compile Include="IOC\Runtime\Binding\Attributes\BindingProvider.cs" />
+    <Compile Include="IOC\Runtime\Binding\Attributes\HasBindings.cs" />
+    <Compile Include="IOC\api\IBinding.cs" />
+    <Compile Include="IOC\api\IBindingContext.cs" />
+    <Compile Include="IOC\api\IBindingKey.cs" />
+    <Compile Include="IOC\api\IBindingName.cs" />
+    <Compile Include="IOC\api\IBindingRequirement.cs" />
+    <Compile Include="IOC\api\extensions\Extensions.cs" />
+    <Compile Include="IOC\api\usafe\IUnsafeBindingContext.cs" />
+    <Compile Include="IOC\api\usafe\IUnsafeValueBindingContext.cs" />
+    <Compile Include="IOC\errors\BindingNotFound.cs" />
+    <Compile Include="IOC\errors\BindingSelfRequirement.cs" />
+    <Compile Include="IOC\errors\IOCExtensionsException.cs" />
+    <Compile Include="IOC\errors\lixo.cs" />
+    <Compile Include="IOC\imp\Binding.cs" />
+    <Compile Include="IOC\imp\BindingContext.cs" />
+    <Compile Include="IOC\imp\BindingContextInnerClasses.cs" />
+    <Compile Include="IOC\imp\BindingKey.cs" />
+    <Compile Include="IOC\imp\BindingName.cs" />
+    <Compile Include="IOC\imp\BindingRequirements.cs" />
+    <Compile Include="IOC\imp\IValueBindingContext.cs" />
+    <Compile Include="IOC\imp\InnerBindingNames.cs" />
+    <Compile Include="IOC\imp\SingletonBinding.cs" />
+    <Compile Include="IOC\imp\UnsafeBindingContextAdapter.cs" />
+    <Compile Include="IOC\imp\ValueBindingContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

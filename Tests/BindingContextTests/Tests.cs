@@ -74,7 +74,7 @@ namespace EasyInject.Tests.BindingContextTests
 		{
 			IBindingContext context = TestsFactory.BindingContext();
 
-			context.Bind<int>().With<string>().To((strParam)=> 45);
+            context.Bind<int>().With<string>().To((strParam, other)=> 45);
 
 			context.Bind<string>().To(()=> "uhul");
 
